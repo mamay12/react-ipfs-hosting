@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Playwrite DK Loopet';
+  src: url("./assets/fonts/Playwrite/PlaywriteDKLoopet-VariableFont_wght.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
