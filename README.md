@@ -1,54 +1,23 @@
-# React + TypeScript + Vite
+## 🔐 Motivation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In today's digital landscape, where censorship and surveillance are on the rise, it's vital to have tools for **free, censorship-resistant, and anonymous publishing**. This project enables anyone to publish content — whether it's text, manifestos, ideas, or whistleblower reports — **without revealing their identity or relying on centralized platforms**.
 
-Currently, two official plugins are available:
+We use **IPFS** (via [Pinata](https://www.pinata.cloud/)) for hosting content in a decentralized and persistent way. To enhance anonymity, we recommend using a **privacy-focused email provider** like [Tuta.io](https://tuta.io), especially when registering for services like Pinata. While it's not strictly required, we use it in our examples as a best practice for maintaining anonymity.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a response to growing restrictions on the free flow of information. It empowers users to share ideas **beyond the reach of censorship**, while maintaining **control over their identity and data**.
 
-## Expanding the ESLint configuration
+## Steps to host
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Create an account in [Tuta](https://tuta.com/) for using in future![tuta-register.png](steps_imgs/tuta-register.png)
+2. Register new account in [Pinata](https://pinata.cloud/) using our new e-mail![pinata-reg.png](steps_imgs/pinata-reg.png)
+3. Need to generate a Pinata JWT Token for GitHub Actions. Go to **Developer** -> **API Keys** section![pinata-jwt.png](steps_imgs/pinata-jwt.png) and click **New Key**.
+    Choose **pinFileToIPFS** and click **Create**. You will see **JWT** section, we need to Paste this JWT Token to the repository secrets with appropriate name PINATA_JWT 
+![gh-secrets.png](steps_imgs/gh-secrets.png)
+![gh-secret-created.png](steps_imgs/gh-secret-created.png)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Coding requirements using React + Vite (if you don't want to fork this repository)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+1. You need to set up your fonts in project locally
+2. Install [ViteSingleFile](https://github.com/richardtallent/vite-plugin-singlefile) plugin and use it in **vite.config.ts** file
+3. On new pull request created and changes pushed CI/CD actions will be applied. In **Actions** you will see new link for your website  
+![deploy-link.png](steps_imgs/deploy-link.png)
