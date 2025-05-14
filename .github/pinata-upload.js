@@ -30,6 +30,7 @@ try {
     const cid = result.IpfsHash;
 
     console.log(cid);
+    fs.writeFileSync(path.join(rootPath, 'link.txt'), `https://${cid}.ipfs.dweb.link/`);
 
 } catch (err) {
     console.error('❌ Error:', err);

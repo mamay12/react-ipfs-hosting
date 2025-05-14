@@ -39,3 +39,4 @@ jobs:
 
       - name: Show published link
         run: echo "Your DApp is available at https://${{ steps.upload.outputs.cid }}.ipfs.dweb.link"
+
