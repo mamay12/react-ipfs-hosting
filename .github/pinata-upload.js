@@ -27,13 +27,10 @@ try {
         }
     });
 
-    console.log('✅ Success:', result);
     const cid = result.IpfsHash;
 
     console.log(cid);
 
-    const link = `https://${cid}.ipfs.dweb.link/`;
-    fs.writeFileSync(path.join(rootPath, 'link.txt'), link);
 } catch (err) {
     console.error('❌ Error:', err);
 }
