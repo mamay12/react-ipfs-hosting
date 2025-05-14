@@ -1,26 +1,28 @@
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import pinataSDK from '@pinata/sdk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const distPath = path.join(__dirname, 'dist');
 
-const pinata = new pinataSDK(process.env.PINATA_JWT);
+const pinataJWT = process.env.PINATA_JWT;
 
-const distPath = join(__dirname, 'dist');
+if (!pinataJWT) {
+    throw new Error('PINATA_JWT not set in environment');
+}
+
+const pinata = new pinataSDK({ pinataJWTKey: pinataJWT });
 
 try {
-    await pinata.testAuthentication();
-
     const result = await pinata.pinFromFS(distPath, {
         pinataMetadata: {
-            name: 'my-site',
+            name: 'My DApp',
         },
     });
 
-    console.log('✅ Успешно загружено в Pinata!');
-    console.log('CID:', result.IpfsHash);
-    console.log(`📦 Доступно по ссылке: https://w3s.link/ipfs/${result.IpfsHash}/`);
+    console.log('✅ Success:', result);
 } catch (err) {
-    console.error('❌ Ошибка при загрузке:', err);
+    console.error('❌ Error:', err);
 }
