@@ -1,7 +1,7 @@
 name: Deploy to IPFS via Pinata
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   statuses: write
 
@@ -14,6 +14,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,6 +32,22 @@ jobs:
         run: yarn build
 
       - name: Upload to Pinata
-        run: node .github/pinata-upload.js
+        id: upload
+        run: |
+          CID=$(node .github/pinata-upload.js)
+          echo "cid=$CID" >> $GITHUB_OUTPUT
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
+
+      - name: Save site link
+        run: echo "https://w3s.link/ipfs/${{ steps.upload.outputs.cid }}/" > site-link.txt
+
+      - name: Commit site-link.txt
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add site-link.txt
+          git commit -m "chore: update site IPFS link to ${{ steps.upload.outputs.cid }}"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
