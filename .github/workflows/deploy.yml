@@ -1,7 +1,7 @@
 name: Deploy to IPFS via Pinata
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   statuses: write
 
@@ -14,6 +14,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,9 +31,12 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Upload to Pinata (IPFS)
-        run: |
-          curl -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
-            -H "Authorization: Bearer ${{ secrets.PINATA_JWT }}" \
-            -F "file=@./dist" \
-            -F "pinataMetadata={\"name\":\"my-app-$(date +%Y-%m-%d-%H-%M)\"};type=application/json"
+      - name: Upload to Pinata
+        id: upload
+        run: echo "cid=$(node .github/pinata-upload.js)" >> "$GITHUB_OUTPUT"
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+
+      - name: Show published link
+        run: echo "Your DApp is available at https://${{ steps.upload.outputs.cid }}.ipfs.dweb.link"
+
