@@ -30,30 +30,7 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Upload dist folder to Pinata
-        run: |
-          BOUNDARY="------------------------$(date +%s)"
-          TMP_FILE=$(mktemp)
-          
-          rm -f $TMP_FILE
-          
-          # Запись каждого файла в multipart
-          find dist -type f | while read filepath; do
-            relpath="${filepath#dist/}"
-            mimetype=$(file --mime-type -b "$filepath")
-          
-            echo "Adding: $relpath"
-          
-            printf -- "--$BOUNDARY\r\n" >> $TMP_FILE
-            printf "Content-Disposition: form-data; name=\"file\"; filename=\"$relpath\"\r\n" >> $TMP_FILE
-            printf "Content-Type: $mimetype\r\n\r\n" >> $TMP_FILE
-            cat "$filepath" >> $TMP_FILE
-            printf "\r\n" >> $TMP_FILE
-          done
-          
-          printf -- "--$BOUNDARY--\r\n" >> $TMP_FILE
-          
-          curl -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
-            -H "Authorization: Bearer ${{ secrets.PINATA_JWT }}" \
-            -H "Content-Type: multipart/form-data; boundary=$BOUNDARY" \
-            --data-binary "@$TMP_FILE"
+      - name: Upload to Pinata
+        run: node upload.js
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
