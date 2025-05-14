@@ -30,9 +30,39 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Upload to Pinata (IPFS)
+      - name: Upload dist folder to Pinata
         run: |
+          apt-get update && apt-get install -y jq
+          
+          # Создаём временный multipart файл
+          TMP_FILE=$(mktemp)
+          BOUNDARY="------------------------$(date +%s)"
+          
+          echo "--$BOUNDARY" > $TMP_FILE
+          
+          find dist -type f | while read filepath; do
+            relpath="${filepath#dist/}"
+            mimetype=$(file --mime-type -b "$filepath")
+          
+            echo "Adding: $relpath"
+          
+            cat <<EOF >> $TMP_FILE
+          --$BOUNDARY
+          Content-Disposition: form-data; name="file"; filename="$relpath"
+          Content-Type: $mimetype
+    
+          EOF
+          cat "$filepath" >> $TMP_FILE
+          echo "" >> $TMP_FILE
+          done
+          
+          cat <<EOF >> $TMP_FILE
+          --$BOUNDARY--
+          EOF
+          
           curl -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
-            -H "Authorization: Bearer ${{ secrets.PINATA_JWT }}" \
-            -F "file=@./dist" \
-            -F "pinataMetadata={\"name\":\"my-app-$(date +%Y-%m-%d-%H-%M)\"};type=application/json"
+          -H "Authorization: Bearer ${{ secrets.PINATA_JWT }}" \
+          -H "Content-Type: multipart/form-data; boundary=$BOUNDARY" \
+          --data-binary "@$TMP_FILE"
+          
+          rm $TMP_FILE
