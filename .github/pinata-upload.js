@@ -20,6 +20,9 @@ try {
         pinataMetadata: {
             name: 'My DApp',
         },
+        pinataOptions: {
+            cidVersion: 1
+        }
     });
 
     console.log('✅ Success:', result);
