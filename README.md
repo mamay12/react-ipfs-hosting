@@ -14,9 +14,9 @@ When you deploy a file or folder to IPFS through Pinata:
 
 2. **Pinata uploads the content** to the IPFS network and **pins** it — meaning:
     - The content is stored on Pinata’s IPFS node.
-    - It won’t be garbage collected or lost, even if no one else is hosting it.
+    - It won’t be garbage-collected or lost, even if no one else is hosting it.
 
-3. **The content becomes accessible** via any IPFS gateway (e.g. `ipfs.io`, `gateway.pinata.cloud`):
+3. **The content becomes accessible** via any IPFS gateway (e.g., `ipfs.io`, `gateway.pinata.cloud`):
     - Example: `https://gateway.pinata.cloud/ipfs/Qm...`
 
 4. **No central server is needed** — IPFS is a peer-to-peer network. Anyone with the CID can access or re-host the content.
@@ -25,48 +25,65 @@ When you deploy a file or folder to IPFS through Pinata:
 
 This makes IPFS ideal for **censorship-resistant, permanent, and anonymous content publishing** — especially when combined with a trusted pinning service like Pinata.
 
-## Steps to host
+## Steps to Host
 
-1. Create an account in [Tuta](https://tuta.com/) for using in future![tuta-register.png](steps_imgs/tuta-register.png)
-2. Register new account in [Pinata](https://pinata.cloud/) using our new e-mail![pinata-reg.png](steps_imgs/pinata-reg.png)
-3. Need to generate a Pinata JWT Token for GitHub Actions. Go to **Developer** -> **API Keys** section![pinata-jwt.png](steps_imgs/pinata-jwt.png) and click **New Key**.
-    Choose **pinFileToIPFS** and click **Create**. You will see **JWT** section, we need to Paste this JWT Token to the repository secrets with appropriate name PINATA_JWT 
-![gh-secrets.png](steps_imgs/gh-secrets.png)
-![gh-secret-created.png](steps_imgs/gh-secret-created.png)
+1. Create an account on [Tuta](https://tuta.com/) for future use.  
+   ![tuta-register.png](steps_imgs/tuta-register.png)
 
-## Coding requirements using React + Vite (if you don't want to fork this repository)
+2. Register a new account on [Pinata](https://pinata.cloud/) using the Tuta email.  
+   ![pinata-reg.png](steps_imgs/pinata-reg.png)
 
-1. You need to set up your fonts in project locally
-2. Install [ViteSingleFile](https://github.com/richardtallent/vite-plugin-singlefile) plugin and use it in **vite.config.ts** file
+3. Generate a Pinata JWT token for GitHub Actions:
+    - Go to the **Developer** → **API Keys** section.  
+      ![pinata-jwt.png](steps_imgs/pinata-jwt.png)
+    - Click **New Key**, choose `pinFileToIPFS`, then click **Create**.
+    - Copy the **JWT token** and paste it into your repository secrets under the name `PINATA_JWT`.  
+      ![gh-secrets.png](steps_imgs/gh-secrets.png)  
+      ![gh-secret-created.png](steps_imgs/gh-secret-created.png)
 
-When using the `vite-plugin-singlefile` plugin during your build process:
+## Coding Requirements Using React + Vite (If You Don’t Want to Fork This Repository)
 
-- **Vite builds your app** as usual: splitting it into multiple JavaScript, CSS, and asset files.
+1. Set up your fonts locally in the project.
+
+2. Install the [vite-plugin-singlefile](https://github.com/richardtallent/vite-plugin-singlefile) and configure it in `vite.config.ts`.
+
+### What the `vite-plugin-singlefile` Does:
+
+- **Vite builds your app** as usual, splitting it into multiple JavaScript, CSS, and asset files.
 - The plugin **post-processes the output** and:
-    - Inlines all JavaScript and CSS directly into the final `index.html` file.
+    - Inlines all JavaScript and CSS into the final `index.html`.
     - Embeds images and fonts as Base64 (via data URLs), if configured.
-- The result is a **fully self-contained `index.html`** file — no external file dependencies at all.
+- The result is a **fully self-contained `index.html`** file — no external file dependencies.
 
 This makes the app:
 
 - **Ideal for IPFS deployment**, since only one file (`index.html`) needs to be uploaded and pinned.
-- **Resistant to broken paths or missing assets**, as everything is embedded in a single file.
+- **Resistant to broken paths or missing assets**, as everything is embedded.
 - **Lightweight to share** — one CID, one link, fully functional SPA (Single Page Application).
 
-This approach greatly simplifies hosting and ensures your app works anywhere — even directly opened from disk, or from any IPFS gateway.
+This greatly simplifies hosting and ensures your app works anywhere — even opened directly from disk or via any IPFS gateway.
 
-3. On new pull request created and changes pushed CI/CD actions will be applied. In **Actions** you will see new link for your website  
-![deploy-link.png](steps_imgs/deploy-link.png)
+3. When a new pull request is created or changes are pushed, CI/CD actions will run automatically.  
+   In the **Actions** tab, you'll see a new link to your deployed website.  
+   ![deploy-link.png](steps_imgs/deploy-link.png)
 
 ## Manual Deployment
-1. Execute **Build** command from package.json  
-![manual-deployment.png](steps_imgs/manual-deployment.png)
-2. Result of this operation will be a folder in the root of project named **dist**.
-![dist.png](steps_imgs/dist.png)
-3. Open your Pinata account and click **Add** button on the top right screen corner. Click **Folder Upload** 
-![pinata-add.png](steps_imgs/pinata-add.png)
-4. Upload your **dist** folder
-5. Now you can see your uploaded folder with CID.
-![uploaded.png](steps_imgs/uploaded.png)
-6. Done! Your site available by CID. You can see it by link **https://CID.ipfs.dweb.link/**.  
-Url example: https://bafybeib3l2qzryxgjj5exwkdvugyle2koglkyn3fjexlonubqppfgn36lq.ipfs.dweb.link/   
+
+1. Run the **build** command from `package.json`.  
+   ![manual-deployment.png](steps_imgs/manual-deployment.png)
+
+2. The result will be a `dist` folder in the project root.  
+   ![dist.png](steps_imgs/dist.png)
+
+3. Open your Pinata account and click the **Add** button in the top-right corner. Select **Folder Upload**.  
+   ![pinata-add.png](steps_imgs/pinata-add.png)
+
+4. Upload your `dist` folder.
+
+5. You will now see your uploaded folder with a generated CID.  
+   ![uploaded.png](steps_imgs/uploaded.png)
+
+6. Done! Your site is available via its CID. You can open it with the following link format:  
+   `https://<CID>.ipfs.dweb.link/`  
+   Example:  
+   `https://bafybeib3l2qzryxgjj5exwkdvugyle2koglkyn3fjexlonubqppfgn36lq.ipfs.dweb.link/`
